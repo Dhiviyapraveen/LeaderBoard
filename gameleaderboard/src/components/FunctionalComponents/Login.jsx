@@ -16,7 +16,7 @@ const Login=(p)=>{
               email:email,
               password:password
             })
-            //console.log(req)
+           
             alert(req.data.response);
             if(req.data.loginStatus){
               navigate("/");

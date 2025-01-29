@@ -23,7 +23,7 @@ const RockPaperScissors = () => {
       (user === "Paper" && computer === "Rock") ||
       (user === "Scissors" && computer === "Paper")
     ) {
-      updateScore(5); // Increase score by 5 for a win
+      updateScore(5); 
       return "You Win!";
     }
     return "You Lose!";
