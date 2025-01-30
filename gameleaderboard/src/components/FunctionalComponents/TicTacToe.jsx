@@ -27,6 +27,7 @@ const TicTacToe = () => {
     if (gameWinner) {
       setWinner(gameWinner);
       if (gameWinner === "X") {
+        setScore(10);
         updateScore(10);
       }
     }
