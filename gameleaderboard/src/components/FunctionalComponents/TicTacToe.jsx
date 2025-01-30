@@ -10,6 +10,7 @@ const TicTacToe = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && typeof user.score === "number") {
+      console.log("Initial Score from LocalStorage:", user.score);
       setScore(user.score);
     }
   }, []);
@@ -57,7 +58,7 @@ const TicTacToe = () => {
 
     try {
       const response = await fetch("https://leaderboard-42zt.onrender.com/update-score", {
-        method: "POST", // ✅ FIXED extra space in "POST "
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, points }),
       });
@@ -67,11 +68,15 @@ const TicTacToe = () => {
       }
 
       const data = await response.json();
+      console.log("API Response:", data); // 🔍 Debugging API Response
+
       if (typeof data.newScore === "number") {
-        // ✅ Updating local storage and setting the score correctly
+        console.log("New Score Received:", data.newScore); // 🔍 Debugging Score Update
+        setScore(data.newScore);
+
         const updatedUser = { ...user, score: data.newScore };
         localStorage.setItem("user", JSON.stringify(updatedUser));
-        setScore(data.newScore);
+        console.log("Updated LocalStorage:", JSON.parse(localStorage.getItem("user"))); // 🔍 Debugging LocalStorage
       }
     } catch (error) {
       console.error("Error updating score:", error);
@@ -85,7 +90,7 @@ const TicTacToe = () => {
       <img src="/tic.webp" alt="Tic Tac Toe Background" className="background-image1" />
       <h2>Tic Tac Toe</h2>
       <div className="status">{status}</div>
-      <div className="score">Your Score: {score}</div> {/* ✅ Score updates immediately */}
+      <div className="score">Your Score: {score}</div>
       <div className="board">
         {board.map((value, index) => (
           <button key={index} onClick={() => handleClick(index)}>
