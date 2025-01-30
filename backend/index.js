@@ -4,7 +4,7 @@ const path = require('path');
 const mdb = require('mongoose');
 const dotenv = require('dotenv');
 const Signup = require("./models/signupSchema");
-const user=require("./models/userschema");
+const User=require("./models/userschema");
 const bcrypt = require('bcrypt');
 const cors=require('cors');
 const app = express();
@@ -76,13 +76,13 @@ app.post('/login', async (req, res) => {
 app.post("/update-score", async (req, res) => {
   const { email, points } = req.body;
   try {
-    let user = await user.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    user.score += points;
-    await user.save();
-    res.json({ newScore: user.score });
+    console.log("inside try");
+    const newCustomer = new User
+({
+      email: email,
+      score: points,
+    });
+    newCustomer.save();
   } catch (error) {
     console.error("Error updating score:", error);
     res.status(500).json({ message: "Internal Server Error" });
