@@ -5,4 +5,4 @@ const UserSchema = new mdb.Schema({
   });
   
 const User = mdb.model("User", UserSchema);
-module.exports=User;
+module.exports=User;  

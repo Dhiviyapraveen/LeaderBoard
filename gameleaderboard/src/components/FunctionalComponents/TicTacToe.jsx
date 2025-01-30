@@ -53,24 +53,30 @@ const TicTacToe = () => {
 
   const updateScore = async (points) => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return;
+    if (!user || !user.email) return;
+  
     try {
       const response = await fetch("https://leaderboard-42zt.onrender.com/update-score", {
-        method: "POST ",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, points }),
+        body: JSON.stringify({ email: user.email, points }), // Ensure backend expects `points`
       });
-
+  
+      if (!response.ok) {
+        throw new Error("Failed to update score");
+      }
+  
       const data = await response.json();
-      if (data.newScore !== undefined) {
+      if (typeof data.newScore === "number") { // Ensure it's a valid score
         user.score = data.newScore;
         localStorage.setItem("user", JSON.stringify(user));
-        setScore(data.newScore);
+        if (typeof setScore === "function") setScore(data.newScore); // Check if setScore is defined
       }
     } catch (error) {
       console.error("Error updating score:", error);
     }
   };
+  
 
   const status = winner ? `Winner: ${winner}` : `Next Player: ${isXNext ? "X" : "O"}`;
 
