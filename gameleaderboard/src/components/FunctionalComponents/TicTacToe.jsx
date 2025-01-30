@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from "react";
 import "./TicTacToe.css";
+import axios from "axios";
 
 const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(0);  // Default score as 0
+  const [loading, setLoading] = useState(true);  // Loading state for checking user
 
+  // Load user score from localStorage on mount
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && typeof user.score === "number") {
-      console.log("Initial Score from LocalStorage:", user.score);
-      setScore(user.score);
+    try {
+      const user = localStorage.getItem("user");
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser && parsedUser.email && typeof parsedUser.score === "number") {
+          console.log("Initial Score from LocalStorage:", parsedUser.score);
+          setScore(parsedUser.score);
+        } else {
+          console.error("Invalid user data in localStorage");
+        }
+      } else {
+        console.log("No user found in LocalStorage");
+      }
+    } catch (error) {
+      console.error("Error parsing user data from localStorage", error);
+    } finally {
+      setLoading(false);  // Regardless of error, stop loading
     }
   }, []);
 
+  // Handle Tic-Tac-Toe moves
   const handleClick = (index) => {
     if (board[index] || winner) return;
 
@@ -27,22 +44,19 @@ const TicTacToe = () => {
     if (gameWinner) {
       setWinner(gameWinner);
       if (gameWinner === "X") {
-        setScore(10);
-        updateScore(10);
+        const newScore = score + 10;
+        setScore(newScore);
+        updateScore(newScore);
       }
     }
   };
 
+  // Check for winner
   const calculateWinner = (squares) => {
     const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
     ];
     for (let line of lines) {
       const [a, b, c] = line;
@@ -53,31 +67,32 @@ const TicTacToe = () => {
     return null;
   };
 
-  const updateScore = async (points) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || !user.email) return;
+  // Update user score in DB and localStorage
+  const updateScore = async (newScore) => {
+    const user = JSON.parse(localStorage.getItem("user")); 
+
+    if (!user || !user.email) {
+      console.error("User email not found.");
+      return;
+    }
 
     try {
-      const response = await fetch("https://leaderboard-42zt.onrender.com/update-score", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, points }),
+      const response = await axios.post("http://localhost:3000/update-score", {
+        email: user.email, 
+        score: newScore
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update score, status: ${response.status}`);
-      }
+      console.log("API Response:", response);
+      
+      if (response?.data?.newScore !== undefined) {
+        console.log("New Score Received:", response.data.newScore);
+        setScore(response.data.newScore);
 
-      const data = await response.json();
-      console.log("API Response:", data); // 🔍 Debugging API Response
-
-      if (typeof data.newScore === "number") {
-        console.log("New Score Received:", data.newScore); // 🔍 Debugging Score Update
-        setScore(data.newScore);
-
-        const updatedUser = { ...user, score: data.newScore };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        console.log("Updated LocalStorage:", JSON.parse(localStorage.getItem("user"))); // 🔍 Debugging LocalStorage
+        const updatedUser = { ...user, score: response.data.newScore };
+        localStorage.setItem("user", JSON.stringify(updatedUser)); 
+        console.log("Updated LocalStorage:", JSON.parse(localStorage.getItem("user")));
+      } else {
+        console.error("Invalid response data:", response.data);
       }
     } catch (error) {
       console.error("Error updating score:", error);
@@ -85,6 +100,10 @@ const TicTacToe = () => {
   };
 
   const status = winner ? `Winner: ${winner}` : `Next Player: ${isXNext ? "X" : "O"}`;
+
+  if (loading) {
+    return <div>Loading...</div>;  // Display loading text while checking user
+  }
 
   return (
     <div className="tic-tac-toe-container">
