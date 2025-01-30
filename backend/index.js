@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
-const Signup = require("./models/signupSchema"); // Signup collection
+const Signup = require("./models/signupSchema"); 
 
 const app = express();
 
@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(cors());
 dotenv.config();
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URL)
   .then(() => console.log("MongoDB Connection Successful"))
   .catch((err) => console.error("MongoDB connection unsuccessful:", err));
@@ -25,7 +24,7 @@ app.get('/static', (req, res) => {
   res.sendFile(path.join(__dirname, "index.html")); 
 });
 
-// Signup Route
+
 app.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,7 +34,7 @@ app.post('/signup', async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      score: 0 // Initialize score at 0
+      score: 0 
     });
 
     await newUser.save();
@@ -45,7 +44,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// Login Route
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -66,7 +65,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Update Score Route
+
 app.post("/update-score", async (req, res) => {
   const { email, score } = req.body;
 
@@ -77,8 +76,8 @@ app.post("/update-score", async (req, res) => {
   try {
       const updatedUser = await Signup.findOneAndUpdate(
           { email }, 
-          { $set: { score } }, // Update score field
-          { new: true } // Return updated document
+          { $set: { score } }, 
+          { new: true } 
       );
 
       if (!updatedUser) {
@@ -86,14 +85,14 @@ app.post("/update-score", async (req, res) => {
       }
 
       console.log("Updated User:", updatedUser);
-      res.json({ success: true, newScore: updatedUser.score }); // Send updated score
+      res.json({ success: true, newScore: updatedUser.score }); 
   } catch (error) {
       console.error("Error updating score:", error);
       res.status(500).json({ error: "Server error" });
   }
 });
 
-// Start Server
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

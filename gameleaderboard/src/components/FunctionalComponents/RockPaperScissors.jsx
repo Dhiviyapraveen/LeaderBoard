@@ -9,14 +9,14 @@ const RockPaperScissors = () => {
 
   const choices = ["Rock", "Paper", "Scissors"];
 
-  // Load user score from localStorage with proper checks
+ 
   useEffect(() => {
     const userData = localStorage.getItem("user");
 
     if (userData) {
       try {
         const user = JSON.parse(userData);
-        console.log("User from localStorage:", user); // Log user object for debugging
+        console.log("User from localStorage:", user); 
         if (user && user.score !== undefined) {
           setScore(user.score);
         }
@@ -26,7 +26,6 @@ const RockPaperScissors = () => {
     }
   }, []);
 
-  // Function to determine the winner
   const determineWinner = (user, computer) => {
     if (user === computer) return "It's a Draw!";
     if (
@@ -34,13 +33,12 @@ const RockPaperScissors = () => {
       (user === "Paper" && computer === "Rock") ||
       (user === "Scissors" && computer === "Paper")
     ) {
-      updateScore(5); // Add 5 points for win
+      updateScore(5); 
       return "You Win!";
     }
     return "You Lose!";
   };
 
-  // Handle user click on Rock, Paper, or Scissors
   const handleClick = (choice) => {
     const computerRandomChoice = choices[Math.floor(Math.random() * choices.length)];
     setUserChoice(choice);
@@ -50,7 +48,7 @@ const RockPaperScissors = () => {
     setResult(gameResult);
   };
 
-  // Update the score in localStorage and backend
+ 
   const updateScore = async (points) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;

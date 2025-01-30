@@ -6,10 +6,10 @@ const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
-  const [score, setScore] = useState(0);  // Default score as 0
-  const [loading, setLoading] = useState(true);  // Loading state for checking user
+  const [score, setScore] = useState(0); 
+  const [loading, setLoading] = useState(true);  
 
-  // Load user score from localStorage on mount
+ 
   useEffect(() => {
     try {
       const user = localStorage.getItem("user");
@@ -27,11 +27,10 @@ const TicTacToe = () => {
     } catch (error) {
       console.error("Error parsing user data from localStorage", error);
     } finally {
-      setLoading(false);  // Regardless of error, stop loading
+      setLoading(false); 
     }
   }, []);
 
-  // Handle Tic-Tac-Toe moves
   const handleClick = (index) => {
     if (board[index] || winner) return;
 
@@ -51,7 +50,7 @@ const TicTacToe = () => {
     }
   };
 
-  // Check for winner
+  
   const calculateWinner = (squares) => {
     const lines = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -67,7 +66,7 @@ const TicTacToe = () => {
     return null;
   };
 
-  // Update user score in DB and localStorage
+
   const updateScore = async (newScore) => {
     const user = JSON.parse(localStorage.getItem("user")); 
 
@@ -102,7 +101,7 @@ const TicTacToe = () => {
   const status = winner ? `Winner: ${winner}` : `Next Player: ${isXNext ? "X" : "O"}`;
 
   if (loading) {
-    return <div>Loading...</div>;  // Display loading text while checking user
+    return <div>Loading...</div>;  
   }
 
   return (
