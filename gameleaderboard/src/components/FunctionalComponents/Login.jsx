@@ -19,7 +19,7 @@ const Login=(p)=>{
            
             alert(req.data.response);
             if(req.data.loginStatus){
-              navigate("/");
+              navigate("/home");
             }
             else{
               navigate("/login")

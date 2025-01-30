@@ -12,7 +12,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/tic-tac-toe" element={<TicTacToe />} />
         <Route path="/rock-paper-scissors" element={<RockPaperScissors />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
