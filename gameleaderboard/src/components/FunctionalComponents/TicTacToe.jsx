@@ -25,8 +25,8 @@ const TicTacToe = () => {
     const gameWinner = calculateWinner(newBoard);
     if (gameWinner) {
       setWinner(gameWinner);
-      if (gameWinner === "X" || gameWinner === "O") {
-        updateScore(10); 
+      if (gameWinner === "X") {
+        updateScore(10); // Only update if X (logged-in user) wins
       }
     }
   };
@@ -54,29 +54,28 @@ const TicTacToe = () => {
   const updateScore = async (points) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user || !user.email) return;
-  
+
     try {
       const response = await fetch("https://leaderboard-42zt.onrender.com/update-score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, points }), // Ensure backend expects `points`
+        body: JSON.stringify({ email: user.email, points }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to update score");
       }
-  
+
       const data = await response.json();
-      if (typeof data.newScore === "number") { // Ensure it's a valid score
+      if (typeof data.newScore === "number") {
         user.score = data.newScore;
         localStorage.setItem("user", JSON.stringify(user));
-        if (typeof setScore === "function") setScore(data.newScore); // Check if setScore is defined
+        setScore(data.newScore); 
       }
     } catch (error) {
       console.error("Error updating score:", error);
     }
   };
-  
 
   const status = winner ? `Winner: ${winner}` : `Next Player: ${isXNext ? "X" : "O"}`;
 
@@ -85,7 +84,7 @@ const TicTacToe = () => {
       <img src="/tic.webp" alt="Tic Tac Toe Background" className="background-image1" />
       <h2>Tic Tac Toe</h2>
       <div className="status">{status}</div>
-      <div className="score">Your Score: {score}</div>
+      <div className="score">Your Score: {score}</div> 
       <div className="board">
         {board.map((value, index) => (
           <button key={index} onClick={() => handleClick(index)}>
