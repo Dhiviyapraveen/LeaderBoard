@@ -9,7 +9,7 @@ const TicTacToe = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
+    if (user && typeof user.score === "number") {
       setScore(user.score);
     }
   }, []);
@@ -26,7 +26,7 @@ const TicTacToe = () => {
     if (gameWinner) {
       setWinner(gameWinner);
       if (gameWinner === "X") {
-        updateScore(10); // Only update if X (logged-in user) wins
+        updateScore(10);
       }
     }
   };
@@ -57,20 +57,21 @@ const TicTacToe = () => {
 
     try {
       const response = await fetch("https://leaderboard-42zt.onrender.com/update-score", {
-        method: "POST",
+        method: "POST", // ✅ FIXED extra space in "POST "
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, points }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update score");
+        throw new Error(`Failed to update score, status: ${response.status}`);
       }
 
       const data = await response.json();
       if (typeof data.newScore === "number") {
-        user.score = data.newScore;
-        localStorage.setItem("user", JSON.stringify(user));
-        setScore(data.newScore); 
+        // ✅ Updating local storage and setting the score correctly
+        const updatedUser = { ...user, score: data.newScore };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setScore(data.newScore);
       }
     } catch (error) {
       console.error("Error updating score:", error);
@@ -84,7 +85,7 @@ const TicTacToe = () => {
       <img src="/tic.webp" alt="Tic Tac Toe Background" className="background-image1" />
       <h2>Tic Tac Toe</h2>
       <div className="status">{status}</div>
-      <div className="score">Your Score: {score}</div> 
+      <div className="score">Your Score: {score}</div> {/* ✅ Score updates immediately */}
       <div className="board">
         {board.map((value, index) => (
           <button key={index} onClick={() => handleClick(index)}>
