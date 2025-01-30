@@ -55,7 +55,7 @@ const TicTacToe = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
     try {
-      const response = await fetch("http://localhost:3000/update-score", {
+      const response = await fetch("https://leaderboard-42zt.onrender.com/update-score", {
         method: "POST ",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, points }),
