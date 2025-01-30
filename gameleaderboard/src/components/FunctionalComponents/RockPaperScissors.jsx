@@ -79,7 +79,7 @@ const RockPaperScissors = () => {
         alt="Rock Paper Scissors"
         className="background-image2"
       />
-      <div className="score">Your Score: {score}</div>
+      
       <div className="options-container">
         {choices.map((choice, index) => (
           <button key={index} className="option-button" onClick={() => handleClick(choice)}>
