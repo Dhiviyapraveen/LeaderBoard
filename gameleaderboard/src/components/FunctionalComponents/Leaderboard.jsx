@@ -13,7 +13,7 @@ const Leaderboard = () => {
   const fetchLeaderboard = () => {
     setLoading(true);
     axios
-      .get("http://localhost:3000/signups") 
+      .get("https://leaderboard-42zt.onrender.com/signups") 
       .then((response) => {
         setLeaderboard(response.data);
         setLoading(false);

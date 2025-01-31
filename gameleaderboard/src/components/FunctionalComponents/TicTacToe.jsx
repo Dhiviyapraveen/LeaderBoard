@@ -72,7 +72,7 @@ const TicTacToe = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/update-score", {
+      const response = await axios.post("https://leaderboard-42zt.onrender.com/update-score", {
         email: user.email,
         score: newScore
       });
