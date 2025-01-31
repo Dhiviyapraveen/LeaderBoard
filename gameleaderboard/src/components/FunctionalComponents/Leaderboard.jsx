@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './Leaderboard.css';
 
@@ -6,10 +6,14 @@ const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetchLeaderboard();
+  }, []);
+
   const fetchLeaderboard = () => {
     setLoading(true);
     axios
-      .get("http://localhost:3000/leaderboard") 
+      .get("http://localhost:3000/signups") 
       .then((response) => {
         setLeaderboard(response.data);
         setLoading(false);
@@ -23,16 +27,15 @@ const Leaderboard = () => {
   return (
     <div className="leaderboard-container">
       <h2>Leaderboard</h2>
-      <button onClick={fetchLeaderboard} disabled={loading}>
-        {loading ? "Loading..." : "Show Leaderboard"}
-      </button>
+      {loading ? <p>Loading...</p> : null}
 
       {leaderboard.length > 0 ? (
         <table>
           <thead>
             <tr>
               <th>Player</th>
-              <th>Wins</th>
+              <th>Email</th>
+              
               <th>Score</th>
             </tr>
           </thead>
@@ -40,8 +43,8 @@ const Leaderboard = () => {
             {leaderboard.map((entry, index) => (
               <tr key={index}>
                 <td>{entry.username}</td>
-                <td>{entry.wins || 0}</td>
-                <td>{entry.score}</td>
+                <td>{entry.email}</td>
+                <td>{entry.score || 0}</td>
               </tr>
             ))}
           </tbody>

@@ -91,7 +91,14 @@ app.post("/update-score", async (req, res) => {
       res.status(500).json({ error: "Server error" });
   }
 });
-
+app.get("/signups", async (req, res) => {
+  try {
+    const leaderboard = await Signup.find().sort({ score: -1 }); 
+    res.json(leaderboard);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching leaderboard data" });
+  }
+});
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

@@ -64,4 +64,19 @@
   z-index: -1; 
 }
 
+.back-button {
+  margin-top: 20px;
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #ff5a5a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.back-button:hover {
+  background-color: #e04848;
+}
 
