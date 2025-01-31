@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import "./TicTacToe.css";
 
@@ -9,7 +9,7 @@ const TicTacToe = () => {
   const [winner, setWinner] = useState(null);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     try {
